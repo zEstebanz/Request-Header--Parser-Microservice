@@ -19,9 +19,15 @@ app.get('/', function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 
-// your first API endpoint...
-app.get('/api/hello', function (req, res) {
-  res.json({ greeting: 'hello API' });
+// Middleware para obtener la IP del cliente:
+
+app.use((req, res, next) => {
+  req.clienteIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  next();
+})
+
+app.get('/api/whoami', function (req, res) {
+  res.json({ ipaddress: req.clienteIp });
 });
 
 // listen for requests :)
